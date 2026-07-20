@@ -1,0 +1,210 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  seeker
+  owner
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password      String
+  phone         String
+  emailVerified Boolean  @default(false) @map("email_verified")
+  role          Role     @default(seeker)
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  properties Property[]
+  inquiries  Inquiry[]
+  wishlist   Wishlist[]
+  reviews    Review[]
+
+  @@map("users")
+}
+
+enum PropertyType {
+  apartment
+  villa
+  house
+  plot
+  commercial
+}
+
+enum ListingType {
+  rent
+  lease
+  sale
+}
+
+enum PropertyStatus {
+  active
+  sold
+  rented
+  inactive
+}
+
+model Property {
+  id     Int  @id @default(autoincrement())
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  title       String
+  description String
+  city        String
+  locality    String
+  state       String
+  address     String
+  gMapUrl     String
+  type        PropertyType
+  listingType ListingType
+  price       Int
+  bedroom     Int
+  status      PropertyStatus @default(active)
+  isDeleted   Boolean        @default(false) @map("is_deleted")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  propertyDetails PropertyDetails?
+  propertyImages  PropertyImage[]
+  inquiries       Inquiry[]
+  reviews         Review[]
+  wishlist        Wishlist[]
+
+  @@index([userId])
+  @@index([city])
+  @@index([type])
+  @@index([listingType])
+  @@index([price])
+  @@index([bedroom])
+  @@index([city, type, listingType, price])
+  @@index([city, bedroom])
+  @@map("properties")
+}
+
+enum FurnishingStatus {
+  full
+  semi
+  none
+}
+
+enum Parking {
+  car
+  bike
+  both
+  none
+}
+
+model PropertyDetails {
+  id         Int      @id @default(autoincrement())
+  propertyId Int      @unique @map("property_id")
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  areaSqft         Float            @map("area_sqft")
+  floor            Int?
+  bedroom          Int
+  bathroom         Int
+  balcony          Int
+  furnishingStatus FurnishingStatus @default(none) @map("furnishing_status")
+  parking          Parking          @default(none)
+  facing           String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([propertyId])
+  @@map("property_details")
+}
+
+model PropertyImage {
+  id         Int      @id @default(autoincrement())
+  propertyId Int      @map("property_id")
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  url     String
+  order   Int
+  isCover Boolean @default(false) @map("is_cover")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([propertyId])
+  @@map("property_images")
+}
+
+enum InquiryStatus {
+  pending
+  responded
+  closed
+}
+
+model Inquiry {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId Int      @map("property_id")
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  message String
+  status  InquiryStatus @default(pending)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, propertyId])
+  @@index([userId])
+  @@index([propertyId])
+  @@map("inquiries")
+}
+
+model Wishlist {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId Int      @map("property_id")
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  isDeleted  Boolean  @default(false) @map("is_deleted")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, propertyId])
+  @@index([userId])
+  @@index([propertyId])
+  @@map("wishlists")
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId Int      @map("property_id")
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  isDeleted  Boolean  @default(false) @map("is_deleted")
+
+  stars   Int
+  note    String?
+  helpful Int[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, propertyId])
+  @@index([userId])
+  @@index([propertyId])
+  @@map("reviews")
+}
