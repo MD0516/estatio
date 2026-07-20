@@ -1,0 +1,146 @@
+@use "variables.scss" as *;
+@use "sass:map";
+
+// Utility classes for colors and spacing
+@each $name, $color in $colors {
+    .text-#{$name} {
+        color: $color !important;
+    }
+
+    .bg-#{$name} {
+        background-color: $color !important;
+    }
+
+    .border-#{$name} {
+        border: 1px solid #{$color} !important;
+    }
+
+    .border-top-#{$name} {
+        border-top: 1px solid #{$color} !important;
+    }
+
+    .border-bottom-#{$name} {
+        border-bottom: 1px solid #{$color} !important;
+    }
+
+    .border-start-#{$name} {
+        border-left: 1px solid #{$color} !important;
+    }
+
+    .border-end-#{$name} {
+        border-right: 1px solid #{$color} !important;
+    }
+
+    @for $num from 1 through 10 {
+        .border-#{$num} {
+            border-width: #{$num}px !important;
+        }
+    }
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    padding: 0.55rem 1.1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+$button-variants: (
+    "primary",
+    "secondary",
+    "accent",
+    "surface",
+);
+
+@each $name in $button-variants {
+
+    $color: map.get($colors, $name);
+    $subtle: map.get($colors, "#{$name}-subtle");
+    $dark: map.get($colors, "#{$name}-dark");
+
+    .btn-#{$name} {
+        background-color: $color;
+        color: map.get($colors, "white");
+        border-color: $color;
+
+        &:hover {
+            background-color: $dark;
+            color: map.get($colors, "white");
+            border-color: $dark;
+            transform: scale(1.02);
+        }
+
+        &:active {
+            transform: scale(0.97);
+        }
+    }
+
+    .btn-#{$name}-outline {
+        background-color: transparent;
+        color: $color;
+        border-color: $color;
+
+        &:hover {
+            background-color: $color;
+            color: map.get($colors, "white");
+            transform: scale(1.02);
+        }
+
+        &.no-hover {
+            &:hover {
+                background-color: transparent;
+                color: $color;
+                border-color: $color;
+            }
+        }
+
+        &:active {
+            transform: scale(0.97);
+        }
+    }
+
+    .btn-#{$name}-subtle {
+        background-color: $subtle;
+        color: $dark;
+        border-color: transparent;
+
+        &:hover {
+            background-color: $color;
+            color: map.get($colors, "white");
+            transform: scale(1.02);
+        }
+
+        &:active {
+            transform: scale(0.97);
+        }
+    }
+}
+
+$button-sizes: (
+    "xs": (padding: 0.3rem 0.6rem, font-size: 0.75rem),
+    "sm": (padding: 0.4rem 0.85rem, font-size: 0.85rem),
+    "md": (padding: 0.55rem 1.1rem, font-size: 0.95rem),
+    "lg": (padding: 0.7rem 1.4rem, font-size: 1.05rem),
+    "xl": (padding: 0.85rem 1.75rem, font-size: 1.15rem),
+);
+
+@each $size, $props in $button-sizes {
+    .btn-#{$size} {
+        padding: map.get($props, padding);
+        font-size: map.get($props, font-size);
+    }
+}

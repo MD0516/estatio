@@ -1,0 +1,44 @@
+@mixin respond-to($bp) {
+    @if $bp =='mobile' {
+        @media (max-width: 425px) {
+            @content;
+        }
+    }
+
+    @else if $bp =='tablet' {
+        @media (min-width: 426px) and (max-width: 799px) {
+            @content;
+        }
+    }
+
+    @else if $bp =='desktop' {
+        @media (min-width: 800px) {
+            @content;
+        }
+    }
+}
+
+@mixin respond-to-max($bp) {
+    @media (max-width: $bp) {
+        @content;
+    }
+}
+
+@mixin respond-to-min($bp) {
+    @media (min-width: $bp) {
+        @content;
+    }
+}
+
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin flex-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

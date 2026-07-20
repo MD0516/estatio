@@ -1,0 +1,36 @@
+$colors: (
+  "primary": #7A2E3A,
+  "primary-dark": #5A1F28,
+  "primary-subtle": #F1E1E3,
+
+  "secondary": #93414D,
+  "secondary-dark": #712D37,
+  "secondary-subtle": #F4E5E7,
+
+  "accent": #B87C82,
+  "accent-dark": #935B62,
+  "accent-subtle": #F7ECED,
+
+  "text": #241618,
+  "text-dark": #140B0C,
+  "text-muted": #7A6062,
+
+  "border": #E3D2D4,
+  "border-light": #F1E5E6,
+  "border-dark": #B69A9C,
+
+  "surface": #FCF8F8,
+  "surface-subtle": #F6EDED,
+  "surface-dark": #EDE0E0,
+
+  "white": #FFFFFF,
+  "black": #000000,
+);
+
+$spacing: (
+  "xs": 0.5rem,
+  "sm": 1rem,
+  "md": 2rem,
+  "lg": 4rem,
+  "xl": 6rem,
+);
